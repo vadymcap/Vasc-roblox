@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags: ["*"]
@@ -12,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: master
 
       - name: Update Changelog
         uses: thomaseizinger/keep-a-changelog-new-release@v3
@@ -50,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: master
 
       - name: Read Changelog
         id: read-changes
@@ -73,7 +76,7 @@ jobs:
           prerelease: ${{ contains(github.ref_name, 'pre') }}
           notes_start_tag: ${{ steps.previus-tag.outputs.tag }}
           generate_release_notes: true
-          commitish: main
+          commitish: master
           draft: true
 
   build:
@@ -84,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: master
 
       - name: Setup Aftman
         uses: ok-nick/setup-aftman@v0.4.2
@@ -92,8 +95,10 @@ jobs:
       - name: Install dependencies
         run: wally install
 
-      - name: Build
-        run: vasc build -vvvv
+      - name: Build Vasc.rbxm
+        run: |
+          vasc build --output Vasc.rbxm -vvvv
+          test -f Vasc.rbxm
 
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v4
