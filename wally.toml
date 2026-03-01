@@ -1,0 +1,14 @@
+[package]
+name = "argon-rbx/argon"
+authors = ["Dervex"]
+description = "Full featured tool for Roblox development"
+registry = "https://github.com/UpliftGames/wally-index"
+license = "Apache-2.0"
+version = "2.0.20"
+realm = "shared"
+private = true
+
+[dependencies]
+Fusion = "dervexhero/fusion-03-dev@0.3.0-dev.1"
+Signal = "dervexhero/advancedsignal@1.0.1"
+Promise = "lukadev-0/typed-promise@4.0.2"

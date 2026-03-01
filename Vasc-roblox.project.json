@@ -1,0 +1,9 @@
+{
+  "name": "Vasc-roblox",
+  "tree": {
+    "$path": "src",
+    "Packages": {
+      "$path": "Packages"
+    }
+  }
+}
