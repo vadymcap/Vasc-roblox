@@ -20,7 +20,7 @@ local function getColors(isDark: boolean): { [string]: { Color3 | { [string]: Co
 
 	return {
 		-- It's actually 130, 120, 230
-		Brand = Color3.fromRGB(44, 44, 44),
+		Brand = Color3.fromRGB(246, 172, 248),
 
 		Background = background,
 		ActiveBackground = Studio.Theme:GetColor(Enum.StudioStyleGuideColor.Titlebar),
