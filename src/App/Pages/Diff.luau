@@ -138,7 +138,7 @@ return function(props: Props): { Instance }
 		)
 	end
 	if skipped > 0 then
-		table.insert(summaryParts, `{skipped} skipped (ignored)`)
+		table.insert(summaryParts, `{skipped} skipped`)
 	end
 	local summary = #summaryParts > 0 and table.concat(summaryParts, "  ") or "No changes"
 

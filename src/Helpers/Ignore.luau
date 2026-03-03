@@ -80,8 +80,9 @@ function Ignore.isIgnored(path: string, patterns: { string }): boolean
 		local glob1 = anchored and pattern or ("**/" .. pattern)
 		local glob2 = (not anchored) and pattern or nil
 
-		-- Walk every prefix of `path` (split on "/").  If any prefix
-		-- matches the pattern, then `path` itself is considered ignored
+		-- Walk every prefix of `path` (split on "/").  We append a
+		-- trailing "/" so that the last segment is captured by the
+		-- ([^/]+)/ pattern.  If any prefix matches, `path` is ignored
 		-- (directory semantics: ignoring a directory ignores its contents).
 		local matched = false
 		local currentPath = ""
