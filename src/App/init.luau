@@ -83,6 +83,7 @@ function App.new()
 	self.settingsWidget = Value(nil)
 	self.helpWidget = Value(nil)
 	self.lastChanges = Value(nil :: Types.Changes?)
+	self.currentProject = Value({} :: Types.Project)
 
 	local isOpen = Value(false)
 
@@ -297,11 +298,11 @@ function App:help()
 end
 
 function App:connect()
-	local project = Value({})
 	local canceled = false
 	local loading = true
 
 	self.lastChanges:set(nil)
+	self.currentProject:set({} :: Types.Project)
 
 	self.core = Core.new(self.host, self.port)
 
@@ -383,7 +384,7 @@ function App:connect()
 		if self.core.status == Core.Status.Connected then
 			self:setPage(Connected {
 				App = self,
-				Project = project,
+				Project = self.currentProject,
 			})
 
 			self:setIcon("Ok")
@@ -394,7 +395,7 @@ function App:connect()
 
 	self.core:onReady(function(projectDetails)
 		loading = false
-		project:set(projectDetails)
+		self.currentProject:set(projectDetails)
 
 		self.lastSync:set(os.time())
 
@@ -402,7 +403,7 @@ function App:connect()
 
 		self:setPage(Connected {
 			App = self,
-			Project = project,
+			Project = self.currentProject,
 		})
 
 		self:setIcon("Ok")
@@ -417,7 +418,7 @@ function App:connect()
 		)
 
 		if kind == "SyncDetails" then
-			project:set(data)
+			self.currentProject:set(data)
 		end
 	end)
 
@@ -446,6 +447,25 @@ function App:connect()
 				self:connect()
 			end
 		end
+	end)
+end
+
+function App:viewDiff(changes: Types.Changes)
+	local signal = Signal.new()
+
+	self:setPage(Diff {
+		App = self,
+		Changes = changes,
+		SkippedIgnored = changes.skippedIgnored,
+		Signal = signal,
+	})
+
+	task.spawn(function()
+		signal:Wait() -- "Back"
+		self:setPage(Connected {
+			App = self,
+			Project = self.currentProject,
+		})
 	end)
 end
 
