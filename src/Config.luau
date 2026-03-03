@@ -22,6 +22,10 @@ export type Setting =
 	| "ChangesThreshold"
 	| "LogLevel"
 	| "OverridePackages"
+	| "EnableIgnoreRules"
+	| "ShowIgnoredSkips"
+	| "PreviewBeforeApply"
+	| "ShowSyncNotifications"
 
 type Config = {
 	__configs: { [Level]: { [Setting]: any } },
@@ -50,6 +54,10 @@ local DEFAULTS = {
 	ChangesThreshold = 5,
 	LogLevel = "Warn",
 	OverridePackages = true,
+	EnableIgnoreRules = true,
+	ShowIgnoredSkips = false,
+	PreviewBeforeApply = "Threshold",
+	ShowSyncNotifications = true,
 }
 
 local CONFIGS = {

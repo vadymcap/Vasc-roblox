@@ -18,6 +18,7 @@ local manifest = require(Vasc.manifest)
 local Config = require(Vasc.Config)
 local Util = require(Vasc.Util)
 local Core = require(Vasc.Core)
+local Types = require(Vasc.Types)
 local describeChanges = require(Helpers.describeChanges)
 
 local Assets = require(script.Assets)
@@ -39,6 +40,7 @@ local Connected = require(Pages.Connected)
 local Unavailable = require(Pages.Unavailable)
 local Prompt = require(Pages.Prompt)
 local Error = require(Pages.Error)
+local Diff = require(Pages.Diff)
 
 local Settings = require(Widgets.Settings)
 local Help = require(Widgets.Help)
@@ -80,6 +82,7 @@ function App.new()
 
 	self.settingsWidget = Value(nil)
 	self.helpWidget = Value(nil)
+	self.lastChanges = Value(nil :: Types.Changes?)
 
 	local isOpen = Value(false)
 
@@ -298,6 +301,8 @@ function App:connect()
 	local canceled = false
 	local loading = true
 
+	self.lastChanges:set(nil)
+
 	self.core = Core.new(self.host, self.port)
 
 	task.spawn(function()
@@ -337,12 +342,30 @@ function App:connect()
 			local choice = signal:Wait()
 
 			while choice == "Diff" do
-				warn("This feature is not yet implemented!")
-				print("You can see raw changes here:", changes)
+				self:setPage(Diff {
+					App = self,
+					Changes = changes,
+					SkippedIgnored = changes.skippedIgnored,
+					Signal = signal,
+				})
 				choice = signal:Wait()
+
+				if choice == "Back" then
+					self:setPage(Prompt {
+						App = self,
+						Message = message,
+						Options = options,
+						Signal = signal,
+					})
+					choice = signal:Wait()
+				end
 			end
 
 			result = choice == "Accept"
+
+			if result then
+				self.lastChanges:set(changes)
+			end
 		-- Prompt user whether to continue when server ID differs
 		else
 			local options = { "Continue", "Cancel" }

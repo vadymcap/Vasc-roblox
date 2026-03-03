@@ -53,6 +53,13 @@ export type Changes = {
 	additions: { AddedSnapshot },
 	updates: { UpdatedSnapshot },
 	removals: { Ref | Instance },
+	skippedIgnored: number?,
+}
+
+export type IgnoreRules = {
+	source: string,
+	patterns: { string },
+	hash: string?,
 }
 
 export type Project = {
@@ -61,6 +68,7 @@ export type Project = {
 	gameId: number?,
 	placeIds: { number },
 	rootRefs: { Ref },
+	ignore: IgnoreRules?,
 }
 
 -- Messages
