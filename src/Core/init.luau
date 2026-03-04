@@ -20,6 +20,8 @@ local Changes = require(script.Changes)
 local Tree = require(script.Tree)
 local Error = require(script.Error)
 
+local Ignore = require(Vasc.Helpers.Ignore)
+
 local SYNCBACK_RATE = 0.5
 local SYNCBACK_DEBOUNCE = 0.01
 
@@ -92,6 +94,9 @@ function Core:run(): Promise.Promise
 
 		self:__verifyProject(project, true):expect()
 
+		-- Apply ignore rules from project details
+		self.processor.write:setIgnoreRules(project.ignore and project.ignore.patterns)
+
 		Log.trace("Subscribing to the server queue..")
 
 		self.client:subscribe():expect()
@@ -130,6 +135,10 @@ function Core:run(): Promise.Promise
 
 		self.status = Core.Status.Connected
 		self.__ready(project)
+
+		if Config:get("ShowSyncNotifications") then
+			print(`Vasc: Connected to '{project.name}'`)
+		end
 
 		Log.trace("Starting sync loops..")
 
@@ -230,7 +239,17 @@ function Core:__verifyChanges(changes: Types.Changes, initial: boolean?): Promis
 		return Promise.resolve()
 	end
 
-	if Changes.Total(changes) > Config:get("ChangesThreshold") then
+	local previewMode = Config:get("PreviewBeforeApply")
+
+	-- "Never" means no prompt regardless of threshold
+	if previewMode == "Never" then
+		return Promise.resolve()
+	end
+
+	local total = Changes.Total(changes)
+	local shouldPrompt = total > Config:get("ChangesThreshold") or previewMode == "Always"
+
+	if shouldPrompt then
 		local err = Error.new(Error.TooManyChanges, #changes.additions, #changes.updates, #changes.removals)
 
 		if not self.__prompt(err.message, changes) then
@@ -261,9 +280,25 @@ function Core:__startSyncLoop()
 				self.processor.write:applyChanges(data)
 				self.lastSync = os.clock()
 
+				local skipped = self.processor.write.skippedIgnored
+				if skipped > 0 and Config:get("ShowIgnoredSkips") then
+					Log.info(`Vasc: {skipped} change(s) skipped due to ignore rules`)
+				end
+
+				data.skippedIgnored = skipped
 				self.__sync(kind, data)
+
+				if Config:get("ShowSyncNotifications") then
+					local adds = #data.additions
+					local upds = #data.updates
+					local rems = #data.removals
+					print(`Vasc: Synced {adds} addition(s), {upds} update(s), {rems} removal(s)`)
+				end
 			elseif kind == "SyncDetails" then
 				self:__verifyProject(data):expect()
+
+				-- Update ignore rules whenever project details change
+				self.processor.write:setIgnoreRules(data.ignore and data.ignore.patterns)
 
 				if not equals(self.project.rootRefs, data.rootRefs) then
 					self.rootInstances = {}
@@ -278,6 +313,10 @@ function Core:__startSyncLoop()
 				self.project = data
 
 				self.__sync(kind, data)
+
+				if Config:get("ShowSyncNotifications") then
+					print(`Vasc: Project details updated for '{data.name}'`)
+				end
 			elseif kind == "ExecuteCode" then
 				self.executor:execute(data.code)
 			elseif kind == "Disconnect" then
@@ -320,6 +359,18 @@ function Core:__startSyncbackLoop()
 
 			if os.clock() - self.lastSync <= SYNCBACK_DEBOUNCE then
 				continue
+			end
+
+			-- Skip events for ignored instances
+			if Config:get("EnableIgnoreRules") and self.project then
+				local ignoreRules = self.project.ignore
+				if ignoreRules and #ignoreRules.patterns > 0 then
+					local path = Ignore.instancePath(event.instance)
+					if Ignore.isIgnored(path, ignoreRules.patterns) then
+						Log.trace("Syncback: ignoring event for", path)
+						continue
+					end
+				end
 			end
 
 			local kind = event.kind

@@ -123,12 +123,26 @@ return function(props: Props): { Instance }
 				},
 				TextButton {
 					Text = "Disconnect",
-					LayoutOrder = 2,
+					LayoutOrder = 3,
 					Solid = true,
 
 					Activated = function()
 						props.App:disconnect()
 						props.App:home()
+					end,
+				},
+				TextButton {
+					Text = "Last Diff",
+					LayoutOrder = 2,
+					Active = Computed(function(use)
+						return use(props.App.lastChanges) ~= nil
+					end),
+					Activated = function()
+						local changes = peek(props.App.lastChanges)
+						if not changes then
+							return
+						end
+						props.App:viewDiff(changes)
 					end,
 				},
 				IconButton {

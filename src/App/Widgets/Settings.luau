@@ -129,11 +129,32 @@ local SETTINGS_DATA: { { Title: string, Settings: { SettingData } } } = {
 				Options = { "Always", "Initial", "Never" },
 			},
 			{
+				Setting = "PreviewBeforeApply",
+				Name = "Preview Before Apply",
+				Description = "When to show a diff preview before applying incoming changes",
+				Options = { "Never", "Threshold", "Always" },
+			},
+			{
 				Setting = "ChangesThreshold",
 				Name = "Changes Threshold",
 				Description = "The maximum number of changes that will be applied before prompting the user",
 				Filter = filterNumber,
 				CustomWidth = 50,
+			},
+			{
+				Setting = "EnableIgnoreRules",
+				Name = "Enable Ignore Rules",
+				Description = "Apply .vascignore patterns received from the CLI to filter changes",
+			},
+			{
+				Setting = "ShowIgnoredSkips",
+				Name = "Show Ignored Skips",
+				Description = "Print a message to output when changes are skipped due to ignore rules",
+			},
+			{
+				Setting = "ShowSyncNotifications",
+				Name = "Sync Notifications",
+				Description = "Print a message to output when a sync event occurs",
 			},
 			{
 				Setting = "LogLevel",

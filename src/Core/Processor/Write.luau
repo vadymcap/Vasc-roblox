@@ -7,6 +7,7 @@ local Config = require(Vasc.Config)
 
 local equals = require(Vasc.Helpers.equals)
 local setWaypoint = require(Vasc.Helpers.setWaypoint)
+local Ignore = require(Vasc.Helpers.Ignore)
 
 local Error = require(script.Parent.Parent.Error)
 
@@ -75,7 +76,13 @@ function WriteProcessor.new(tree, client)
 	return setmetatable({
 		tree = tree,
 		client = client,
+		ignorePatterns = {} :: { string },
+		skippedIgnored = 0,
 	}, WriteProcessor)
+end
+
+function WriteProcessor:setIgnoreRules(patterns: { string }?)
+	self.ignorePatterns = patterns or {}
 end
 
 function WriteProcessor:applyChanges(changes: Types.Changes, initial: boolean?)
@@ -83,15 +90,58 @@ function WriteProcessor:applyChanges(changes: Types.Changes, initial: boolean?)
 
 	setWaypoint("Sync")
 
+	local shouldIgnore = Config:get("EnableIgnoreRules") and #self.ignorePatterns > 0
+	self.skippedIgnored = 0
+	local ignorePatterns = self.ignorePatterns
+
 	for _, snapshot in changes.additions do
+		if shouldIgnore then
+			local parent = self.tree:getInstance(snapshot.parent)
+			if parent then
+				local path = Ignore.instancePath(parent) .. "/" .. snapshot.name
+				if Ignore.isIgnored(path, ignorePatterns) then
+					self.skippedIgnored += 1
+					continue
+				end
+			end
+		end
+
 		self:applyAddition(snapshot, initial)
 	end
 
 	for _, snapshot in changes.updates do
+		if shouldIgnore then
+			local instance = self.tree:getInstance(snapshot.id)
+			if instance then
+				local path = Ignore.instancePath(instance)
+				if Ignore.isIgnored(path, ignorePatterns) then
+					self.skippedIgnored += 1
+					continue
+				end
+			end
+		end
+
 		self:applyUpdate(snapshot, initial)
 	end
 
 	for _, object in changes.removals do
+		if shouldIgnore then
+			local instance: Instance?
+			if typeof(object) == "Instance" then
+				instance = object
+			else
+				instance = self.tree:getInstance(object)
+			end
+
+			if instance then
+				local path = Ignore.instancePath(instance)
+				if Ignore.isIgnored(path, ignorePatterns) then
+					self.skippedIgnored += 1
+					continue
+				end
+			end
+		end
+
 		self:applyRemoval(object, initial)
 	end
 

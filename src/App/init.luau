@@ -18,6 +18,7 @@ local manifest = require(Vasc.manifest)
 local Config = require(Vasc.Config)
 local Util = require(Vasc.Util)
 local Core = require(Vasc.Core)
+local Types = require(Vasc.Types)
 local describeChanges = require(Helpers.describeChanges)
 
 local Assets = require(script.Assets)
@@ -39,6 +40,7 @@ local Connected = require(Pages.Connected)
 local Unavailable = require(Pages.Unavailable)
 local Prompt = require(Pages.Prompt)
 local Error = require(Pages.Error)
+local Diff = require(Pages.Diff)
 
 local Settings = require(Widgets.Settings)
 local Help = require(Widgets.Help)
@@ -80,6 +82,8 @@ function App.new()
 
 	self.settingsWidget = Value(nil)
 	self.helpWidget = Value(nil)
+	self.lastChanges = Value(nil :: Types.Changes?)
+	self.currentProject = Value({} :: Types.Project)
 
 	local isOpen = Value(false)
 
@@ -294,9 +298,11 @@ function App:help()
 end
 
 function App:connect()
-	local project = Value({})
 	local canceled = false
 	local loading = true
+
+	self.lastChanges:set(nil)
+	self.currentProject:set({} :: Types.Project)
 
 	self.core = Core.new(self.host, self.port)
 
@@ -337,12 +343,30 @@ function App:connect()
 			local choice = signal:Wait()
 
 			while choice == "Diff" do
-				warn("This feature is not yet implemented!")
-				print("You can see raw changes here:", changes)
+				self:setPage(Diff {
+					App = self,
+					Changes = changes,
+					SkippedIgnored = changes.skippedIgnored,
+					Signal = signal,
+				})
 				choice = signal:Wait()
+
+				if choice == "Back" then
+					self:setPage(Prompt {
+						App = self,
+						Message = message,
+						Options = options,
+						Signal = signal,
+					})
+					choice = signal:Wait()
+				end
 			end
 
 			result = choice == "Accept"
+
+			if result then
+				self.lastChanges:set(changes)
+			end
 		-- Prompt user whether to continue when server ID differs
 		else
 			local options = { "Continue", "Cancel" }
@@ -360,7 +384,7 @@ function App:connect()
 		if self.core.status == Core.Status.Connected then
 			self:setPage(Connected {
 				App = self,
-				Project = project,
+				Project = self.currentProject,
 			})
 
 			self:setIcon("Ok")
@@ -371,7 +395,7 @@ function App:connect()
 
 	self.core:onReady(function(projectDetails)
 		loading = false
-		project:set(projectDetails)
+		self.currentProject:set(projectDetails)
 
 		self.lastSync:set(os.time())
 
@@ -379,7 +403,7 @@ function App:connect()
 
 		self:setPage(Connected {
 			App = self,
-			Project = project,
+			Project = self.currentProject,
 		})
 
 		self:setIcon("Ok")
@@ -394,7 +418,7 @@ function App:connect()
 		)
 
 		if kind == "SyncDetails" then
-			project:set(data)
+			self.currentProject:set(data)
 		end
 	end)
 
@@ -423,6 +447,25 @@ function App:connect()
 				self:connect()
 			end
 		end
+	end)
+end
+
+function App:viewDiff(changes: Types.Changes)
+	local signal = Signal.new()
+
+	self:setPage(Diff {
+		App = self,
+		Changes = changes,
+		SkippedIgnored = changes.skippedIgnored,
+		Signal = signal,
+	})
+
+	task.spawn(function()
+		signal:Wait() -- "Back"
+		self:setPage(Connected {
+			App = self,
+			Project = self.currentProject,
+		})
 	end)
 end
 
