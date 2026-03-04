@@ -120,22 +120,13 @@ return function(props: Props): { Instance }
 	-- Build summary line
 	local summaryParts = {}
 	if adds > 0 then
-		table.insert(
-			summaryParts,
-			`<font color="{hex("Add")}">{adds} addition{s(adds)}</font>`
-		)
+		table.insert(summaryParts, `<font color="{hex("Add")}">{adds} addition{s(adds)}</font>`)
 	end
 	if upds > 0 then
-		table.insert(
-			summaryParts,
-			`<font color="{hex("Update")}">{upds} update{s(upds)}</font>`
-		)
+		table.insert(summaryParts, `<font color="{hex("Update")}">{upds} update{s(upds)}</font>`)
 	end
 	if rems > 0 then
-		table.insert(
-			summaryParts,
-			`<font color="{hex("Remove")}">{rems} removal{s(rems)}</font>`
-		)
+		table.insert(summaryParts, `<font color="{hex("Remove")}">{rems} removal{s(rems)}</font>`)
 	end
 	if skipped > 0 then
 		table.insert(summaryParts, `{skipped} skipped`)
@@ -171,11 +162,17 @@ return function(props: Props): { Instance }
 		},
 	}
 	local addSection = Section(`Additions ({adds})`, Theme.Colors.Diff.Add, addLabels)
-	if addSection then table.insert(scrollChildren, addSection) end
+	if addSection then
+		table.insert(scrollChildren, addSection)
+	end
 	local updSection = Section(`Updates ({upds})`, Theme.Colors.Diff.Update, updLabels)
-	if updSection then table.insert(scrollChildren, updSection) end
+	if updSection then
+		table.insert(scrollChildren, updSection)
+	end
 	local remSection = Section(`Removals ({rems})`, Theme.Colors.Diff.Remove, remLabels)
-	if remSection then table.insert(scrollChildren, remSection) end
+	if remSection then
+		table.insert(scrollChildren, remSection)
+	end
 
 	return {
 		List {
