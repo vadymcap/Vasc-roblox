@@ -1,5 +1,13 @@
 #!/bin/bash
 
-wally install &&
-vasc sourcemap --output sourcemap.json &&
+set -e
+
+if ! command -v vasc >/dev/null 2>&1; then
+	echo "vasc CLI was not found in PATH."
+	echo "Install or build Vasc CLI first, then rerun this script."
+	exit 127
+fi
+
+wally install
+vasc sourcemap --output sourcemap.json
 wally-package-types --sourcemap sourcemap.json Packages

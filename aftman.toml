@@ -1,5 +1,4 @@
 [tools]
-vasc = "vadymcap/vasc@2.0.36"
 stylua = "JohnnyMorganz/stylua@2.3.1"
 selene = "Kampfkarren/selene@0.30.0"
 wally = "UpliftGames/wally@0.3.2"

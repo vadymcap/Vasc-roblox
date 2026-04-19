@@ -92,19 +92,22 @@ jobs:
       - name: Setup Aftman
         uses: ok-nick/setup-aftman@v0.4.2
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Vasc CLI from source
+        run: |
+          git clone --depth 1 https://github.com/vadymcap/Vasc.git /tmp/Vasc
+          cargo build --release --locked --manifest-path /tmp/Vasc/Vasc-cli/Cargo.toml
+          echo "/tmp/Vasc/Vasc-cli/target/release" >> "$GITHUB_PATH"
+          vasc --version
+
       - name: Install dependencies
         run: wally install
 
       - name: Build Vasc.rbxm
         run: |
-          if command -v vasc >/dev/null 2>&1; then
-            vasc build --output Vasc.rbxm -vvvv
-          elif command -v vasc >/dev/null 2>&1; then
-            vasc build --output Vasc.rbxm -vvvv
-          else
-            echo "Neither vasc nor vasc was found in PATH"
-            exit 127
-          fi
+          vasc build --output Vasc.rbxm -vvvv
           test -f Vasc.rbxm
 
       - name: Upload to Artifacts
