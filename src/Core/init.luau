@@ -225,10 +225,33 @@ function Core:__verifyProject(project: Types.Project, initial: boolean?): Promis
 		end
 	end
 
-	if not SemVer.parse(project.version):isCompatible(SemVer.parse(manifest.package.version)) then
+	local mode = Config:get("VersionMismatchMode")
+	local serverVersion = SemVer.parse(project.version)
+	local clientVersion = SemVer.parse(manifest.package.version)
+
+	if not serverVersion.valid or not clientVersion.valid then
 		local err = Error.new(Error.Version, manifest.package.version, project.version)
 
-		return Promise.reject(err)
+		if mode == "Strict" then
+			return Promise.reject(err)
+		end
+
+		Log.warn(`Version parsing failed ({err.message}); continuing in mode '{mode}'`)
+		return Promise.resolve()
+	end
+
+	local compatible = if mode == "AllowMinor"
+		then clientVersion:isMajorCompatible(serverVersion)
+		else clientVersion:isCompatible(serverVersion)
+
+	if not compatible then
+		local err = Error.new(Error.Version, manifest.package.version, project.version)
+
+		if mode == "Warn" then
+			Log.warn(`Version mismatch warning: {err.message}`)
+		else
+			return Promise.reject(err)
+		end
 	end
 
 	return Promise.resolve()

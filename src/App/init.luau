@@ -298,6 +298,10 @@ function App:help()
 end
 
 function App:connect()
+	if self.core and (self.core.status == Core.Status.Connecting or self.core.status == Core.Status.Connected) then
+		return
+	end
+
 	local canceled = false
 	local loading = true
 

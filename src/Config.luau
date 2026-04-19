@@ -21,6 +21,7 @@ export type Setting =
 	| "DisplayPrompts"
 	| "ChangesThreshold"
 	| "LogLevel"
+	| "VersionMismatchMode"
 	| "OverridePackages"
 	| "EnableIgnoreRules"
 	| "ShowIgnoredSkips"
@@ -53,6 +54,7 @@ local DEFAULTS = {
 	DisplayPrompts = "Always",
 	ChangesThreshold = 5,
 	LogLevel = "Warn",
+	VersionMismatchMode = "Strict",
 	OverridePackages = true,
 	EnableIgnoreRules = true,
 	ShowIgnoredSkips = false,
@@ -90,17 +92,37 @@ function Config:get(setting, level)
 		Log.error(`Setting '{setting}' does not exist!`)
 	end
 
-	if level then
-		return self.__configs[level][setting]
-	end
+	local value = nil
 
-	for _, config in self.__configs do
-		if config[setting] ~= nil then
-			return config[setting]
+	if level then
+		value = self.__configs[level][setting]
+	else
+		for _, config in self.__configs do
+			if config[setting] ~= nil then
+				value = config[setting]
+				break
+			end
 		end
 	end
 
-	return default
+	if value == nil then
+		return default
+	end
+
+	if type(value) ~= type(default) then
+		local casted = Util.cast(value, type(default))
+
+		if casted == nil then
+			Log.warn(
+				`Invalid value type for setting '{setting}', expected '{type(default)}' but got '{type(value)}'. Falling back to default.`
+			)
+			return default
+		end
+
+		value = casted
+	end
+
+	return value
 end
 
 function Config:getDefault(setting)

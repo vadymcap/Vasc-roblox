@@ -11,6 +11,7 @@ local Log = require(Vasc.Log)
 type Watcher = typeof(setmetatable(
 	{} :: {
 		isActive: boolean,
+		suppressUntil: number,
 		connections: { [Instance]: { RBXScriptConnection } },
 		tagConnections: { [string | CollectionService]: { RBXScriptConnection } },
 		signal: Signal.Signal,
@@ -39,6 +40,7 @@ Watcher.__index = Watcher
 function Watcher.new()
 	return setmetatable({
 		isActive = false,
+		suppressUntil = 0,
 		connections = {},
 		tagConnections = {},
 		signal = Signal.new(),
@@ -49,6 +51,7 @@ function Watcher:start(rootInstances)
 	Log.trace("Starting watcher..")
 
 	self.isActive = true
+	self.suppressUntil = os.clock() + 0.05
 
 	for _, instance in rootInstances do
 		self:__connectEvents(instance)
@@ -80,6 +83,9 @@ end
 function Watcher:stop()
 	Log.trace("Stopping watcher..")
 
+	self.isActive = false
+	self.suppressUntil = os.clock() + 0.1
+
 	for _, connections in self.connections do
 		for _, connection in connections do
 			connection:Disconnect()
@@ -92,7 +98,6 @@ function Watcher:stop()
 		end
 	end
 
-	self.isActive = false
 	self.connections = {}
 	self.tagConnections = {}
 end
@@ -198,7 +203,15 @@ function Watcher:__unwatchTag(tag)
 end
 
 function Watcher:__onAdded(instance)
+	if not self.isActive then
+		return
+	end
+
 	self:__connectEvents(instance)
+
+	if os.clock() < self.suppressUntil then
+		return
+	end
 
 	self.signal:Fire({
 		kind = "Add",
@@ -207,6 +220,10 @@ function Watcher:__onAdded(instance)
 end
 
 function Watcher:__onChanged(instance, property)
+	if not self.isActive or os.clock() < self.suppressUntil then
+		return
+	end
+
 	self.signal:Fire({
 		kind = "Change",
 		instance = instance,
@@ -215,6 +232,10 @@ function Watcher:__onChanged(instance, property)
 end
 
 function Watcher:__onRemoved(instance)
+	if not self.isActive then
+		return
+	end
+
 	local connections = self.connections[instance]
 
 	if connections then
@@ -223,6 +244,10 @@ function Watcher:__onRemoved(instance)
 		end
 
 		self.connections[instance] = nil
+	end
+
+	if os.clock() < self.suppressUntil then
+		return
 	end
 
 	self.signal:Fire({

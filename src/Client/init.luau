@@ -13,6 +13,10 @@ local function generateId(): number
 	return math.floor(math.random() * 10 ^ 9)
 end
 
+local READ_TIMEOUT_RETRIES = 5
+local READ_RETRY_BASE_DELAY = 0.25
+local READ_RETRY_MAX_DELAY = 2
+
 local Client = {}
 Client.__index = Client
 
@@ -100,20 +104,28 @@ function Client:read(): Promise.TypedPromise<Types.Message>
 
 	local url = self:getUrl("read")
 
-	return Http.post(url, {
-		clientId = self.clientId,
-	})
-		:andThen(function(response)
-			return response:decode()
-		end)
-		:catch(function(err)
-			-- We don't need to handle this as Rust queue uses `recv_timeout`
-			if err == Error.Timedout then
-				return self:read()
-			else
+	local function readAttempt(attempt: number): Promise.TypedPromise<Types.Message>
+		return Http.post(url, {
+			clientId = self.clientId,
+		})
+			:andThen(function(response)
+				return response:decode()
+			end)
+			:catch(function(err)
+				if err == Error.Timedout and attempt < READ_TIMEOUT_RETRIES then
+					local delay = math.min(READ_RETRY_BASE_DELAY * (2 ^ attempt), READ_RETRY_MAX_DELAY)
+
+					Log.trace(`Read timed out, retrying in {delay}s (attempt {attempt + 1}/{READ_TIMEOUT_RETRIES})`)
+					task.wait(delay)
+
+					return readAttempt(attempt + 1)
+				end
+
 				return Promise.reject(err)
-			end
-		end)
+			end)
+	end
+
+	return readAttempt(0)
 end
 
 function Client:write(changes: Types.Changes): Promise.Promise

@@ -163,6 +163,12 @@ local SETTINGS_DATA: { { Title: string, Settings: { SettingData } } } = {
 				Options = { "Off", "Error", "Warn", "Info", "Debug", "Trace" },
 			},
 			{
+				Setting = "VersionMismatchMode",
+				Name = "Version Mismatch Mode",
+				Description = "How strict version checks should be when connecting to the server",
+				Options = { "Strict", "Warn", "AllowMinor" },
+			},
+			{
 				Setting = "OverridePackages",
 				Name = "Override Packages",
 				Description = "Whether writing changes to the instances affected by <b>PackageLink</b> should be allowed",
