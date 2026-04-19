@@ -1,5 +1,5 @@
 [package]
-name = "argon-rbx/argon"
+name = "vasc-rbx/vasc"
 authors = ["Dervex"]
 description = "Full featured tool for Roblox development"
 registry = "https://github.com/UpliftGames/wally-index"

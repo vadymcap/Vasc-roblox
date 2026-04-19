@@ -99,10 +99,10 @@ jobs:
         run: |
           if command -v vasc >/dev/null 2>&1; then
             vasc build --output Vasc.rbxm -vvvv
-          elif command -v argon >/dev/null 2>&1; then
-            argon build --output Vasc.rbxm -vvvv
+          elif command -v vasc >/dev/null 2>&1; then
+            vasc build --output Vasc.rbxm -vvvv
           else
-            echo "Neither vasc nor argon was found in PATH"
+            echo "Neither vasc nor vasc was found in PATH"
             exit 127
           fi
           test -f Vasc.rbxm

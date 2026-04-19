@@ -42,7 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - Improved Help widget
-- Argon now creates history waypoint before executing your code
+- Vasc now creates history waypoint before executing your code
 
 ### Fixed
 
@@ -96,18 +96,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- TextBox is now highlighted when editing its contents ([#13](https://github.com/argon-rbx/argon-roblox/pull/13))
+- TextBox is now highlighted when editing its contents ([#13](https://github.com/vasc-rbx/vasc-roblox/pull/13))
 
 ### Fixed
 
-- Some icon setting are no longer invisible in light mode ([#8](https://github.com/argon-rbx/argon-roblox/pull/8))
-- Argon widget doesn't pop up in playtest anymore on Windows ([#9](https://github.com/argon-rbx/argon-roblox/pull/9))
+- Some icon setting are no longer invisible in light mode ([#8](https://github.com/vasc-rbx/vasc-roblox/pull/8))
+- Vasc widget doesn't pop up in playtest anymore on Windows ([#9](https://github.com/vasc-rbx/vasc-roblox/pull/9))
 - Updated obsolete commands in Help widget
 
 ### Changed
 
-- TextBoxes now scroll instead of scale when text is too long ([#10](https://github.com/argon-rbx/argon-roblox/pull/10))
-- Improved border contrast and added setting category highlight ([#11](https://github.com/argon-rbx/argon-roblox/pull/11))
+- TextBoxes now scroll instead of scale when text is too long ([#10](https://github.com/vasc-rbx/vasc-roblox/pull/10))
+- Improved border contrast and added setting category highlight ([#11](https://github.com/vasc-rbx/vasc-roblox/pull/11))
 
 ## [2.0.14] - 2024-10-24
 
@@ -147,7 +147,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Floating point errors no longer cause some properties to be detected as changed
-- Argon UI quality no longer drops with extreme widget sizes
+- Vasc UI quality no longer drops with extreme widget sizes
 - General UI visual and performance improvements
 - Settings, Help and Project Details widgets now open properly after begin closed with `x` button
 
@@ -168,7 +168,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - Experimental support for syncing MeshPart's MeshId
-- Argon sync actions can now be undone an unlimited number of times
+- Vasc sync actions can now be undone an unlimited number of times
 
 ### Fixed
 
@@ -179,18 +179,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - Proper support for `PackageLink` managed instances (`Override Packages` setting)
-- When Argon fails to apply property changes it provides the reason now
+- When Vasc fails to apply property changes it provides the reason now
 
 ### Fixed
 
-- Modifying properties of newly added services no longer crashes Argon
+- Modifying properties of newly added services no longer crashes Vasc
 
 ## [2.0.7] - 2024-06-16
 
 ### Fixed
 
 - `Tags` and `Attributes` of `Value` like instances now sync back in two-way sync
-- Argon no longer stops when the plugin widget is closed ([#3](https://github.com/argon-rbx/argon-roblox/issues/3))
+- Vasc no longer stops when the plugin widget is closed ([#3](https://github.com/vasc-rbx/vasc-roblox/issues/3))
 
 ## [2.0.6] - 2024-05-12
 
@@ -201,13 +201,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- Argon no longer tries to sync changes when testing the game (even if auto connect is enabled)
+- Vasc no longer tries to sync changes when testing the game (even if auto connect is enabled)
 
 ## [2.0.5] - 2024-05-08
 
 ### Added
 
-- Current plugin status is now displayed on the Argon's toolbar icon
+- Current plugin status is now displayed on the Vasc's toolbar icon
 
 ### Fixed
 
@@ -222,7 +222,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - `workspace.Camera` is now ignored by syncback so HTTP request limit no longer gets exceeded
-- Removing services no longer causes Argon to crash, instead the user receives a warning
+- Removing services no longer causes Vasc to crash, instead the user receives a warning
 
 ### Changed
 
@@ -239,11 +239,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- Syncing back instances with one of the properties set to `math.huge` no longer causes Argon to crash
+- Syncing back instances with one of the properties set to `math.huge` no longer causes Vasc to crash
 
 ### Changed
 
-- Applying corrupted instance changes no longer causes Argon to crash
+- Applying corrupted instance changes no longer causes Vasc to crash
 - Dom database is now saved in MessagePack, this fixes some issues & decreases the plugin size
 
 ## [2.0.1] - 2024-05-02
@@ -272,8 +272,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- Argon network protocol now uses MessagePack instead of JSON
-- Argon UI now supports custom Studio themes
+- Vasc network protocol now uses MessagePack instead of JSON
+- Vasc UI now supports custom Studio themes
 - All floating widgets and some UI elements
 
 ### Fixed
@@ -295,13 +295,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - Instance name changes are now synced properly
-- Argon UI no longer flickers after connection cancellation
+- Vasc UI no longer flickers after connection cancellation
 
 ## [2.0.0-pre3] - 2024-03-20
 
 ### Fixed
 
-- Locked property error ([#1](https://github.com/argon-rbx/argon-roblox/issues/1))
+- Locked property error ([#1](https://github.com/vasc-rbx/vasc-roblox/issues/1))
 - Sync confirmation cancellation not working
 - Text inputs in the Settings widget
 
@@ -315,7 +315,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- First Argon 2 plugin pre-release
+- First Vasc 2 plugin pre-release
 
 [unreleased]: https://github.com/vadymcap/Vasc-roblox/compare/2.0.26...HEAD
 [2.0.26]: https://github.com/vadymcap/Vasc-roblox/compare/2.0.25...2.0.26
@@ -323,30 +323,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 [2.0.24]: https://github.com/vadymcap/Vasc-roblox/compare/2.0.23...2.0.24
 [2.0.23]: https://github.com/vadymcap/Vasc-roblox/compare/2.0.22...2.0.23
 [2.0.22]: https://github.com/vadymcap/Vasc-roblox/compare/2.0.21...2.0.22
-[2.0.21]: https://github.com/argon-rbx/argon-roblox/compare/2.0.20...2.0.21
-[2.0.20]: https://github.com/argon-rbx/argon-roblox/compare/2.0.19...2.0.20
-[2.0.19]: https://github.com/argon-rbx/argon-roblox/compare/2.0.18...2.0.19
-[2.0.18]: https://github.com/argon-rbx/argon-roblox/compare/2.0.17...2.0.18
-[2.0.17]: https://github.com/argon-rbx/argon-roblox/compare/2.0.16...2.0.17
-[2.0.16]: https://github.com/argon-rbx/argon-roblox/compare/2.0.15...2.0.16
-[2.0.15]: https://github.com/argon-rbx/argon-roblox/compare/2.0.14...2.0.15
-[2.0.14]: https://github.com/argon-rbx/argon-roblox/compare/2.0.13...2.0.14
-[2.0.13]: https://github.com/argon-rbx/argon-roblox/compare/2.0.12...2.0.13
-[2.0.12]: https://github.com/argon-rbx/argon-roblox/compare/2.0.11...2.0.12
-[2.0.11]: https://github.com/argon-rbx/argon-roblox/compare/2.0.10...2.0.11
-[2.0.10]: https://github.com/argon-rbx/argon-roblox/compare/2.0.9...2.0.10
-[2.0.9]: https://github.com/argon-rbx/argon-roblox/compare/2.0.8...2.0.9
-[2.0.8]: https://github.com/argon-rbx/argon-roblox/compare/2.0.7...2.0.8
-[2.0.7]: https://github.com/argon-rbx/argon-roblox/compare/2.0.6...2.0.7
-[2.0.6]: https://github.com/argon-rbx/argon-roblox/compare/2.0.5...2.0.6
-[2.0.5]: https://github.com/argon-rbx/argon-roblox/compare/2.0.4...2.0.5
-[2.0.4]: https://github.com/argon-rbx/argon-roblox/compare/2.0.3...2.0.4
-[2.0.3]: https://github.com/argon-rbx/argon-roblox/compare/HEAD...2.0.3
-[2.0.2]: https://github.com/argon-rbx/argon-roblox/compare/2.0.1...2.0.2
-[2.0.1]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0-pre5...2.0.0
-[2.0.0-pre5]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0-pre4...2.0.0-pre5
-[2.0.0-pre4]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0-pre3...2.0.0-pre4
-[2.0.0-pre3]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0-pre2...2.0.0-pre3
-[2.0.0-pre2]: https://github.com/argon-rbx/argon-roblox/compare/2.0.0-pre1...2.0.0-pre2
-[2.0.0-pre1]: https://github.com/argon-rbx/argon-roblox/compare/8d4d16c128b3400be5ec789bc2f10130e31182b7...2.0.0-pre1
+[2.0.21]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.20...2.0.21
+[2.0.20]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.19...2.0.20
+[2.0.19]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.18...2.0.19
+[2.0.18]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.17...2.0.18
+[2.0.17]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.16...2.0.17
+[2.0.16]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.15...2.0.16
+[2.0.15]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.14...2.0.15
+[2.0.14]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.13...2.0.14
+[2.0.13]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.12...2.0.13
+[2.0.12]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.11...2.0.12
+[2.0.11]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.10...2.0.11
+[2.0.10]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.9...2.0.10
+[2.0.9]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.8...2.0.9
+[2.0.8]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.7...2.0.8
+[2.0.7]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.6...2.0.7
+[2.0.6]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.5...2.0.6
+[2.0.5]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.4...2.0.5
+[2.0.4]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.3...2.0.4
+[2.0.3]: https://github.com/vasc-rbx/vasc-roblox/compare/HEAD...2.0.3
+[2.0.2]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0-pre5...2.0.0
+[2.0.0-pre5]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0-pre4...2.0.0-pre5
+[2.0.0-pre4]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0-pre3...2.0.0-pre4
+[2.0.0-pre3]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0-pre2...2.0.0-pre3
+[2.0.0-pre2]: https://github.com/vasc-rbx/vasc-roblox/compare/2.0.0-pre1...2.0.0-pre2
+[2.0.0-pre1]: https://github.com/vasc-rbx/vasc-roblox/compare/8d4d16c128b3400be5ec789bc2f10130e31182b7...2.0.0-pre1
